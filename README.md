@@ -29,14 +29,14 @@
 当一个项目经过多次交手后，在对老业务进行问题诊断时，称得上是两眼一抹黑，无奈也只能加日志、打包、上线、重新请求、查看日志、找出问题，最终浪费生命。
 
 ### 传统IDE配置繁琐
-传统IDE集成的debug能力开启，需要配置开通端口，然后本地服务器启动，再进入调试，比较繁琐，那么为了解决这些问题， 正是jdebugger出现的主要原因。
+传统IDE集成的debug能力开启，需要配置开通端口，然后本地服务器启动，再进入调试，比较繁琐，那么为了解决这些问题， 正是pinkfox出现的主要原因。
 
-## 关于 JDebugger
-一种无需开通端口，项目正常编译部署后，直接${ip}/jdebugger.html访问即可在web端进行debug，并且界面足够简洁，依赖足够轻量。 帮助研发从需求的生命周期中从开发-->自测-->联调-->测试-->上线-->上线后排查问题的整个过程提效。
+## 关于 pinkfox
+一种无需开通端口，项目正常编译部署后，直接${ip}/pinkfox.html访问即可在web端进行debug，并且界面足够简洁，依赖足够轻量。 帮助研发从需求的生命周期中从开发-->自测-->联调-->测试-->上线-->上线后排查问题的整个过程提效。
 
-![jdebugger.gif](docs/jdebugger.gif)
+![gif.gif](docs/gif.gif)
 
-## JDebugger 特点
+## pinkfox 特点
 
 一种无需额外开通端口就能让开发人员在Web端对预发、甚至是生产环境的Java代码进行调试的轻量级debug工具。
  
@@ -47,7 +47,7 @@
 - 支持一键禁用全部断点、清除所有断点。    
 - 无需额外开通端口，通过浏览器即可访问和使用。
 - 避免本地与服务器代码不一致问题。
-- 编译环节做到预发、线上环境完全隔离，在maven compile阶段加入-Djdebugger=true即可生效Debug能力。不加-Djdebugger=true无断点能力，业务完全不受影响（同不加maven dependency）。
+- 编译环节做到预发、线上环境完全隔离，在maven compile阶段加入-Dpinkfox=true即可生效Debug能力。不加-Dpinkfox=true无断点能力，业务完全不受影响（同不加maven dependency）。
 - 支持>、<、>=、<=、==等条件表达式断点。
 - 支持目标类文件搜索触达。
 
@@ -58,16 +58,16 @@
 ```xml
 <dependency>
     <groupId>com.kratos</groupId>
-    <artifactId>jdebugger</artifactId>
+    <artifactId>pinkfox</artifactId>
     <version>${version}</version>
 </dependency>
 ```
-### 2、在maven compile命令中增加-Djdebugger=true，例如：
+### 2、在maven compile命令中增加-Dpinkfox=true，例如：
 ```text
-mvn clean -U install -Dmaven.test.skip=true -Djdebugger=true
+mvn clean -U install -Dmaven.test.skip=true -Dpinkfox=true
 ```
 
-### 3、访问${ip}/jdebugger.html
+### 3、访问${ip}/pinkfox.html
 
 ##注意事项
 1、依赖本包后，本地起服务如果报错：
@@ -81,12 +81,12 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 -Djps.track.ap.dependencies=false
 ```
 
-2、如果访问jdebugger.html被sso拦截，请在excludePath中排除/路径。
+2、如果访问pinkfox.html被sso拦截，请在excludePath中排除/路径。
 
 3、注意：
 
 - 目前只支持java8，tomcat7及以上。
-- 不加-Djdebugger=true无断点能力，业务完全不受影响（同不加maven dependency）。
+- 不加-Dpinkfox=true无断点能力，业务完全不受影响（同不加maven dependency）。
 - 不支持对依赖的第三方Jar内进行断点调试，比如JDK源码、spring源码等。
 - 支持多线程环境下的断点调试。
 - 支持内部类断点。  
@@ -100,8 +100,3 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 
 ## 协议
 [MIT license](./LICENSE).
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=denoland/deno&type=Date)](https://star-history.com/#denoland/deno)
-
