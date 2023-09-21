@@ -69,7 +69,7 @@ mvn clean -U install -Dmaven.test.skip=true -Dpinkfox=true
 
 ### 3、访问${ip}/pinkfox.html
 
-##注意事项
+## 注意事项
 1、依赖本包后，本地起服务如果报错：
 ```text
 com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProcessingEnvironment
