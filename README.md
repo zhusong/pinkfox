@@ -1,11 +1,10 @@
-<p align="center"><a href="https://go-kratos.dev/" target="_blank"><img src="https://github.com/go-kratos/kratos/blob/main/docs/images/kratos-large.png?raw=true"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/go-kratos/kratos/actions"><img src="https://github.com/go-kratos/kratos/workflows/Go/badge.svg" alt="Build Status"></a>
-</p>
-<p align="center">
-<a href="https://www.producthunt.com/posts/go-kratos?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-go-kratos" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=306565&theme=light" alt="Go Kratos - A Go framework for microservices. | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-</p>
+![Language](https://img.shields.io/badge/language-java-brightgreen)
+![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen)
+![license](https://img.shields.io/badge/license-MIT-brightgreen)
+![jdk](https://img.shields.io/badge/JDK-8-brightgreen)
+</div>
 
 ##### Translate to: [English](README_en.md)
 
@@ -34,7 +33,7 @@
 ## 关于 pinkfox
 一种无需开通端口，项目正常编译部署后，直接${ip}/pinkfox.html访问即可在web端进行debug，并且界面足够简洁，依赖足够轻量。 帮助研发从需求的生命周期中从开发-->自测-->联调-->测试-->上线-->上线后排查问题的整个过程提效。
 
-![gif.gif](docs/gif.gif)
+![gif.gif](docs/pinkfox.gif)
 
 ## pinkfox 特点
 
@@ -57,7 +56,7 @@
 ### 1、添加maven依赖
 ```xml
 <dependency>
-    <groupId>com.kratos</groupId>
+    <groupId>co.xiaowangzi</groupId>
     <artifactId>pinkfox</artifactId>
     <version>${version}</version>
 </dependency>
