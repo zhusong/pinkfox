@@ -89,7 +89,7 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 ### 4、性能损耗
 如果生产环境生效了断点能力，虽然在没有设置任何断点的情况下，IO密集型项目性能仍有5%~10%的损耗，CPU密集型性能损耗尤甚，但不影响业务流程的完整性，请自行判断是否给生产环境使用，请看下方最佳实践。
 ### 5、项目结构问题导致无法使用
-因为是web http请求，部分特殊项目结构（比如南京那套的Execute封装controller的框架）存在调试页面的servlet请求无法走到debug状态机，从而功能无法正常使用，此时进群咨询，群ID在本文最下方。
+因为是web http请求，部分特殊项目结构存在调试页面的servlet请求无法走到debug状态机，从而功能无法正常使用，此时进群咨询，群ID在本文最下方。
 ### 6、无法获取普通注释
 源码展示中javadoc可以正常展示，但普通注释无法输出。
 
