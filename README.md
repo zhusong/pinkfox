@@ -102,16 +102,16 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 ###2、非断点状态
 按钮均处于灰色样式，不可点击：
 
-![img_1.png](img_1.png)
+![img_1.png](docs/img_1.png)
 
 ###3、断点状态
 按钮均处于亮色，可点击：
 
-![img_2.png](img_2.png)
+![img_2.png](docs/img_2.png)
 
 
 ## 按钮功能
-![img.png](img.png)
+![img.png](docs/img.png)
 
 ## 社区
 - [微信群]
