@@ -1,0 +1,507 @@
+body{
+    margin:0px;
+    padding:0px;
+    background-color:#060606;
+    font-family: 'Fira Code', monospace;
+
+}
+ul{
+    margin:0px;
+    padding:0px;
+}
+
+.head{
+    height:4vh;
+    background-color: rgb(53, 53, 53);
+    color:#fff;
+    /* border-bottom: 1px solid #000; */
+}
+
+
+
+.platform{
+    padding:0px 8px;
+    font-size:18px;
+    line-height: 4vh;
+    display:flex;
+    justify-content: space-between  ;
+}
+
+.code-tree{
+    height: 66vh;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    background-color:#fff;
+
+}
+.frame-stack{
+    min-height:30vh;
+    background-color:#1e1d1d;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #ccc;
+}
+.code-area{
+    height:66vh;
+    background-color:#fff;
+    padding-left:5px;
+    position: relative;
+    border-left:1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+}
+
+.code-pre{
+    font-size:13px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+.console{
+    height:30vh;
+    background-color:#141414;
+}
+.el-main{
+    padding:0px;
+}
+pre{
+    margin:0px;
+}
+
+.point-base{
+    width: 14px;
+    height: 14px;
+    border: none;
+    border-radius: 50%;
+    display:inline-block;
+    vertical-align: middle;
+    margin-right:5px;
+    margin-left:-23px;
+    background: rgb(229 232 236);
+}
+
+.point-base:hover{
+    cursor: pointer;
+}
+
+.point-selected {
+    background-color:orange;
+}
+
+.point-debuging{
+    background-color:red;
+}
+
+.point-line-base{
+    display: inline-block;
+    /* margin:3px 5px; */
+    padding:3px 5px;
+    margin:1px 5px 0px 0px;
+}
+
+.point-line-selected{
+    background-color: rgb(237 241 245);
+    width:100%;
+}
+
+.point-line-executing{
+    background-color:#f89898;
+    width:100%;
+    color:#fff !important;
+}
+
+.break_line{
+    margin:2px 0px;
+    display: inline-block;
+    width:100%;
+    padding: 1px 3px;
+}
+
+pre.prettyprint{
+    border-right:0px;
+    border:0px;
+}
+
+
+.operate{
+    background-color:#888;
+    height:30px;
+    /* border-bottom:1px solid #aaa */
+    border-right:1px solid #999;
+}
+.operate .iconfont{
+    opacity: 0.5;
+}
+.operate .iconfont{
+    font-size:18px;
+    color:#fff;
+    display:inline-block;
+    vertical-align: middle;
+    height:30px;
+    line-height: 30px;
+    font-weight:bold;
+}
+
+.operate .operate-btn{
+    display:inline-block;
+        font-size:12px;
+    color:#eee;
+    vertical-align: middle;
+    text-align: center;;
+    height:30px;
+    padding:0px 5px;
+    line-height: 30px;
+}
+
+.operate .operate-btn:hover{
+    cursor: pointer;
+    background-color:#141414;
+}
+.operate .rig{
+    margin-right:15px;
+    display:inline-block;
+    padding:0px 7px;
+}
+
+.operate .lef{
+    margin-right:3px;
+    vertical-align: middle;
+    line-height: 28px;
+}
+.operate .spliter{
+    color:#ccc;
+    font-weight: bold;
+    display: inline-block;
+    margin: 0px 15px;
+}
+
+.operate .rig.active:hover, .operate .rig.muting:hover{
+    color:#fff;
+    cursor: pointer;
+    opacity: 1;
+    background-color: #444;
+}
+
+
+.operate .operate-btn.active{
+    background-color:#141414;
+    /* border-bottom:1px solid #aaa;  */
+}
+
+
+.operate .rig.active{
+    color:#79ca79;
+    opacity: 1;
+}
+
+
+.operate .rig.icon-stop.active{
+    color:#d24848;
+}
+
+.operate-content{
+    color:#fff;
+    font-size:12px;
+    margin:0px;
+    padding:0px;
+    overflow-y: scroll;
+    height: calc(30vh - 30px);
+    overflow-x: scroll;
+
+}
+
+.icon-trash:hover{
+    color:rgb(238, 192, 225);
+}
+.variable-item{
+    padding:8px 10px;
+}
+.operate-content {
+    list-style: none;
+}
+
+.variable-name{
+    margin-right:10px;
+    color:pink;
+    font-weight: 500;
+}
+
+.variable-name .iconfont{
+    color:#aaa;
+    font-weight: bold;
+}
+.variable-value{
+    color:#aaa;
+    font-weight: bold;;
+}
+
+.variable-name .icon-list{
+    margin:0px 5px 5px 0px;
+    display: inline-block;
+    font-size:12px;
+    color:#b7b779;
+}
+
+.operate-log-div{
+    color:#fff;
+    font-size:13px;
+    white-space: pre-wrap;
+    overflow-y: scroll;
+    height: calc(30vh - 30px);
+}
+
+.breakPoint-pointIndex{
+    margin-left:10px;
+    color:#aaa;
+}
+.breakPoint-list{
+    margin:0px;
+    padding:0px;
+    overflow-y: scroll;
+    height: calc(30vh - 30px);
+    overflow-x: scroll;
+}
+
+.breakPoint-list-normal{
+    color:#fff;
+    font-size:13px;
+    margin:3px 5px;
+}
+
+.breakPoint-list-normal:hover{
+    color:#ccc;
+}
+.breakPoint-debuging{
+    background-color:red;
+    color:#fff;
+}
+.breakPoint-list-gray{
+    color:gray;
+    font-size:13px;
+}
+
+
+.checkfour{
+    margin-right:3px;
+    vertical-align: middle;
+}
+
+.operate .muting {
+    color:#d24848;
+    opacity: 1;;
+}
+
+.el-tree{
+    background-color: #fff;
+    color:#000;
+    font-size:11px;
+}
+.el-tree-node__label{
+    font-size:11px;
+}
+/*修改滚动条样式*/
+div::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+}
+div::-webkit-scrollbar-track{
+background: rgb(239, 239, 239);
+}
+div::-webkit-scrollbar-thumb{
+background: #bfbfbf;
+border-radius:10px;
+}
+div::-webkit-scrollbar-thumb:hover{
+background: #333;
+}
+div::-webkit-scrollbar-corner{
+background: rgb(239, 239, 239);;
+}
+
+.custom-tree-node .iconfont{
+    font-size:16px;
+    color:#d0a5a5;
+    display:inline-block;
+    margin-right:5px;
+}
+
+.tree-node-label{
+    font-size:12px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.el-tree-node:focus > .el-tree-node__content {
+    background-color: #b4b7ba87 !important;
+}
+.el-tree-node__content:hover {
+    background-color: #b4b7ba87;
+}
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background-color: #b4b7ba87;
+    color:#080;
+}
+
+
+.no-content{
+    /*flex 布局*/
+    display: flex;
+    /*实现垂直居中*/
+    align-items: center;
+    /*实现水平居中*/
+    justify-content: center;
+    text-align: justify;
+    height:66vh;
+    margin:0 auto;
+    padding-top:32px;
+    width:calc(75vw - 30px)
+}
+
+.no-content .pun, .no-content .pln, .no-content .typ{
+    color:#909399 !important;
+    font-size:14px;
+    font-family: 'Fira Code', monospace;
+}
+
+pre{
+    font-family: 'Fira Code', monospace;
+}
+
+.icon-file{
+    color:#ccc;
+}
+
+.el-select{
+
+    width:100%;
+}
+.el-input__wrapper{
+    border-radius: 0px;
+    /* box-shadow: none; */
+}
+.el-select-dropdown__item{
+    font-size:13px;
+    padding:5px 10px;
+}
+
+.jsonValue-bad .iconfont, .jsonValue-good .iconfont{
+    margin-right:5px;
+}
+.jsonValue-bad{
+    color:#ee3737;
+    margin:5px 0px;
+    vertical-align: bottom;
+}
+
+.jsonValue-good{
+    color:#a5c6a5;
+    margin:5px 0px;
+    vertical-align: bottom;
+}
+.prettyprint ol.linenums > li { list-style-type: decimal; }
+
+.main-left{
+    width:calc(75vw - 30px);
+    float: left;
+}
+
+.main-right{
+    width:30px;
+    background-color: #888;;
+    float: right;
+    height: 100%;
+}
+
+.el-main{
+    overflow: hidden;
+}
+.debug-context{
+    font-size:12px;
+    text-align: center;
+    /* padding:20px 0px; */
+    border-bottom: 1px solid #999;
+    writing-mode: tb-rl;
+    margin: 0px 0px;
+    padding:10px 8px;
+    color:#fff;
+}
+
+.debug-context:hover{
+    cursor: pointer;
+}
+
+.debug-context.hover{
+    background-color: #444;
+    cursor: pointer;
+}
+
+
+.debug-context-area{
+    height:66vh;
+    width:30vw;
+    position: absolute;
+    float: right;
+    top:0px;
+    right:0px;
+    margin-right:30px;
+    background-color: #444;;
+    color:#fff;
+    border: 0px;
+    padding: 5px 10px 0px;
+    font-size:14px;
+}
+
+.debug-context-item{
+    margin:10px 0px;
+
+}
+.debug-context-item-desc{
+    width:150px;
+    display:inline-block;
+}
+
+.debug-context-item a{
+    color:#fff;
+}
+.debug-context-title{
+    font-size:16px;
+    margin-bottom:20px;
+    color:#eee;
+}
+
+.running-status-dot-nodebuging{
+    width:15px;
+    height:15px;
+    display: inline-block;
+    background-color:#79ca79;
+    border-radius: 15px;
+    margin-right:10px;
+}
+
+.debug-intro{
+    font-size:14px;
+}
+
+.debug-intro a{
+    color:#fff;
+}
+
+.express-input{
+    margin:20px 0px;
+}
+.express-btn{
+    display:flex;
+    justify-content: flex-end;
+}
+
+.breakPoint-expression{
+    width: 12px;
+    height: 12px;
+    border: none;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0px;
+    margin-left: 13px;
+    background: rgb(229 232 236);
+    background-color: red;
+}

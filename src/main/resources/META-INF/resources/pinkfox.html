@@ -1,0 +1,687 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+
+    <!-- fira font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.207/distr/fira_code.css">
+
+    <!--run_prettify.js-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <link rel="stylesheet" href="./fonts/iconfont.css">
+
+    <link rel="stylesheet" href="./css/a.css" />
+
+    <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
+
+    <script src="https://unpkg.com/vue@next"></script>
+
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+
+    <title>pinkfox</title>
+</head>
+<body>
+<div id="app">
+    <div class="head">
+        <div class="platform">
+            <div>pinkfox</div>
+            <div class="debug-intro"><span><a target="_blank" href="https://github.com/zhusong/pinkfox">使用文档</a></span></div>
+        </div>
+
+    </div>
+    <div class="common-layout">
+        <el-container>
+            <el-container>
+                <el-aside width="25vw">
+                    <div class="code-tree">
+                        <div>
+                            <el-select
+                                    v-model="searchingInputValue"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    placeholder="Searching"
+                                    :remote-method="remoteSearch"
+                                    :loading="searchingLoading"
+                                    @change="selectTrigger"
+                            >
+                                <el-option
+                                        v-for="item in searchingOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                />
+                            </el-select>
+                        </div>
+                        <div>
+                            <el-tree :data="pathTree" icon-class=" "
+                                     :default-expanded-keys="defaultExpandKeys"
+                                     :props="defaultProps"
+                                     ref="tree"
+                                     node-key="id"
+                                     :highlight-current="true"
+                                     @node-click="requestHtmlClick" :current-node-key="currentNodekey">
+                                <template #default="{ node, data }">
+                              <span class="custom-tree-node" slot-scope="{ node, data}">
+                                <span>
+                                  <i :class="data.icon"></i><span class="tree-node-label">{{ node.label }}</span>
+                                </span>
+                              </span>
+                                </template>
+                            </el-tree>
+                        </div>
+                    </div>
+                    <div class="frame-stack">
+                        <div class="operate" >
+                            <span class="operate-btn active">Show All Breakpoints&nbsp;&nbsp;</span>
+                            <span class="spliter">|</span>
+                            <span v-if="allBreakPointsArray.length > 0 && !breakPointsMute" class="iconfont icon-circle-minus rig active" @click="muteBreakpoints" title="muite all breakpoints"></span>
+                            <span v-else-if="breakPointsMute" class="iconfont icon-circle-minus rig muting" @click="cancelMuteBreakpoints" title="cancel muite all breakpoints"></span>
+                            <span v-else class="iconfont icon-circle-minus rig" title="mute all breakPoint"></span>
+
+                            <span v-if="allBreakPointsArray.length > 0" class="iconfont icon-circle-close rig active"  @click="clearBreakPoints" title="clear all breakpoints"></span>
+                            <span v-else class="iconfont icon-circle-close rig" title="clear all breakpoints"></span>
+
+                        </div>
+                        <div class="breakPoint-list">
+                            <div v-for="breakPoint in allBreakPointsArray" @click="jumpToClassFromBreakPoint(breakPoint.classFullQualifiedName,breakPoint.pointIndex, breakPoint.id)" :key="breakPoint.classFullQualifiedName" :class="[{'breakPoint-list-normal': !breakPointsMute, 'breakPoint-list-gray':breakPointsMute }]">
+                                <input type="checkbox" @click="removeBreakPoint(breakPoint.classFullQualifiedName, breakPoint.pointIndex)" checked class="checkfour">
+                                <span v-if="breakPoint.debuging" style="cursor: pointer;" class="breakPoint-debuging">{{breakPoint.classFullQualifiedName}}</span>
+                                <span v-else style="cursor: pointer;">{{breakPoint.classSimpleName}}</span>
+                                <span>:</span>
+                                <span class="breakPoint-pointIndex">{{breakPoint.pointIndex}}</span>
+                                <span v-if="breakPoint.hasExpression" @click="showInputPopup(breakPoint.classFullQualifiedName, breakPoint.pointIndex)" class="breakPoint-expression"></span>
+                                <!--<span v-show="expressionBreakpoint()">?</span>-->
+                            </div>
+                        </div>
+                    </div>
+                </el-aside>
+                <el-main width="75vw">
+                    <div class="code-area">
+                        <div class="code-pre">
+                            <pre v-html="htmlSourceCode" class="prettyprint"></pre>
+                        </div>
+                        <div class="debug-context-area" v-if="debugContextShow">
+                            <div class="debug-context-title"><span class="running-status-dot-nodebuging"></span><span>当前Debug上下文</span></div>
+                            <div class="debug-context-details">
+                                <div class="debug-context-item"><span class="debug-context-item-desc">是否正在debug:</span><span>{{this.isDebuging}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">正在Debug的类:</span><span>{{this.debugingClass}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">正在debug的断点:</span><span>{{this.debugingPointIndex}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">当前展示的类:</span><span>{{this.shownClass}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">是否mute所有断点:</span><span>{{this.breakPointsMute}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">是否断点发生变化:</span><span>{{this.changing}}</span></div>
+                                <div class="debug-context-item"><span class="debug-context-item-desc">排障dump:</span><span><a href="/pinkfoxDump">下载</a></span></div>
+                            </div>
+                            <!-- <div>当前类的数据:{{this.changing}}</div> -->
+                        </div>
+                        <div class="main-right">
+                            <div v-if="debugContextShow" class="debug-context hover" @click="showDebugingContext">Debuging Context</div>
+                            <div v-else class="debug-context" @click="showDebugingContext">Debuging Context</div>
+                            <!-- <el-drawer v-model="debugContextShow" append-to-body="false" modal="false" z-index="0" title="Debuging执行上下文" :with-header="false">
+                              <span>Hi there!</span>
+                            </el-drawer> -->
+
+                        </div>
+                    </div>
+                    <div class="botton-area">
+                        <div class="operate" >
+                            <span class="operate-btn active" v-if="tab == 1">Show Variables</span>
+                            <span class="operate-btn" v-else @click="updateTab(1)">Show Variables</span>
+
+                            <span class="operate-btn active" v-if="tab == 2"><span class="iconfont icon-console lef"></span><span @click="scrollLog">Console&nbsp;&nbsp;</span><span class="iconfont icon-trash lef"></span></span>
+                            <span class="operate-btn" v-else @click="updateTab(2)"><span class="iconfont icon-console lef"></span>Console&nbsp;&nbsp;<span class="iconfont icon-trash lef"></span></span>
+                            <span class="spliter">|</span>
+
+                            <span v-if="isDebuging" class="iconfont icon-debugstepover rig active"  @click="stepOver" title="step over"></span>
+                            <span v-else class="iconfont icon-debugstepover rig" title="step over"></span>
+
+                            <span v-if="isDebuging" class="iconfont icon-debugstepinto rig active" @click="stepInto" title="step into"></span>
+                            <span v-else class="iconfont icon-debugstepinto rig" title="step into"></span>
+
+                            <span v-if="isDebuging" class="iconfont icon-debugstepout rig active" @click="stepOut" title="step out"></span>
+                            <span v-else class="iconfont icon-debugstepout rig" title="step out"></span>
+
+                            <span v-if="isDebuging" class="iconfont icon-resume rig active" @click="resume" title="resume"></span>
+                            <span v-else class="iconfont icon-resume rig" title="resume"></span>
+
+                            <span v-if="isDebuging" class="iconfont icon-stop rig active" @click="stop" title="stop"></span>
+                            <span v-else class="iconfont icon-stop rig" title="stop"></span>
+
+                            <span class="iconfont icon-flush rig active" title="flush" @click="flush" style="font-size:14px"></span>
+                        </div>
+                        <div class="operate-content" v-if="tab  == 1">
+                            <div v-for="variable in variables" :key="variable.name" class="variable-item">
+                              <span class="variable-name">
+                                <span class="iconfont icon-arrow" v-if="variable.list || variable.object" @click="jsonPrint(variable.fullName)"></span>
+                                  <!--                                  <span v-if="variable.list || variable.object" @click="jsonPrint(variable.fullName)" class="iconfont icon-list"></span>-->
+                                <span>{{ !variable.name ? "为空或者获取失败" : variable.name}}</span>
+                              </span>
+                                <span class="variable-value">{{variable.value == null ? "null" : variable.value}}</span>
+                                <div v-if="variable.jsonValue && variable.jsonGood" class="jsonValue-good"><span class="iconfont icon-show"></span>{{variable.jsonValue}}</div>
+                                <div v-if="variable.jsonValue && !variable.jsonGood" class="jsonValue-bad"><span class="iconfont icon-show"></span>{{variable.jsonValue}}</div>
+                            </div>
+                        </div>
+                        <div class="operate-log" v-if="tab == 2">
+                            <div class="operate-log-div" ref="logRef">{{debugingLog}}</div>
+                        </div>
+                    </div>
+
+                </el-main>
+            </el-container>
+        </el-container>
+    </div>
+    <el-dialog v-model="dialogVisible" title="条件断点" @close="handleCancel" :visible="dialogVisible">
+        <span>支持JEXL表达式语法</span>
+        <el-input v-model="expression" class="express-input" placeholder="请输入断点条件"></el-input>
+        <span slot="footer" class="express-btn">
+            <el-button @click="handleCancel">取 消</el-button>
+            <el-button @click="handleConfirm" type="primary">确 定</el-button>
+        </span>
+    </el-dialog>
+</div>
+<script>
+      const App = {
+        data() {
+          let self = this;
+          return {
+            htmlSourceCode: '<div class="no-content">No Data</div>',
+            isDebuging:false,
+            debugingClass:null,
+            debugingPointIndex:null,
+            getCurrentInfoTimer:null,
+            getLogTimer:null,
+            variables:null,
+            debugingLog:"",
+            currentNodekey:null,
+            changing:false,
+            defaultExpandKeys:[],
+            tab: 2,
+            allBreakPointsArray:[],
+            breakPointsMute:false,
+            pathTree:[],
+            defaultProps: {
+              children: 'children',
+              label: 'label'
+            },
+            shownClass:"",
+            getHtmlTimer:null,
+            searching:null,
+            searchingOptions:[
+            ],
+            searchingLoading:false,
+            searchingInputValue:"",
+            debugContextShow:false,
+            requestingContext:false,
+
+            dialogs:{},
+            dialogVisible:false,
+            expression:null,
+            classFullQualifiedName:null,
+            pointIndex:null,
+          }
+        },
+        async mounted(){
+          this.debugingLog = "欢迎使用pinkfox，在使用中有任何问题，github地址: https://github.com/zhusong/pinkfox。\n\n";
+          this.getContextTimer = setInterval(this.lightQuery, 200);
+          window.breakPointClicked = this.breakPointClicked;
+          this.requestDir();
+          setTimeout(() => {
+            this.queryContext();
+          }, 50);
+        },
+
+        beforeDestroy(){
+          clearInterval(this.getContextTimer);
+        },
+
+        methods:{
+
+          async showDebugingContext(){
+            this.debugContextShow = !this.debugContextShow;
+          },
+          async jsonPrint(fullVariableName){
+            if(!fullVariableName){
+                return;
+            }
+            let result = await this.fetchRemote('/pinkfoxVariableJsonPrint?variable=' + fullVariableName);
+            if(result.code === 0 && result.data){
+                for(let item of this.variables){
+                    if(item.fullName == fullVariableName){
+                        item.jsonValue = result.data.jsonValue;
+                        item.jsonGood = result.data.jsonGood;
+                    }
+                }
+            }
+          },
+
+          async selectTrigger(){
+            this.shownClass = this.searchingInputValue;
+            let result = await this.fetchRemote('/pinkfoxRequestHtml?classFullQualifiedName='+this.shownClass);
+            if(result.code === 0 && result.data){
+              this.htmlSourceCode = PR.prettyPrintOne(result.data.htmlSource);
+              //默认展开的节点
+              this.defaultExpandKeys = [result.data.id];
+              this.currentNodekey = result.data.id;
+              this.$nextTick(() => {
+                  this.$refs.tree.setCurrentKey(result.data.id); //一定要加这个选中了否则样式没有出来
+              });
+            }
+          },
+
+          async remoteSearch(query){
+            if(!query){
+              return;
+            }
+            this.searchingLoading = true;
+            let result = await this.fetchRemote('/pinkfoxSearching?query=' + query);
+            if(result.code === 0 && result.data){
+              this.searchingOptions = result.data;
+            }
+            this.searchingLoading = false;
+          },
+          jump(){
+             let point = "point|" + this.shownClass + "|" + this.debugingPointIndex;
+             document.getElementById(point).scrollIntoView({ behavior: 'smooth', block: 'center' });
+          },
+          async queryContext(){
+              try{
+                if(this.requestingContext){
+                    return;
+                }
+                this.requestingContext = true;
+                let classFullQualifiedName = this.shownClass;
+                let result = await this.fetchRemote('/pinkfoxRequestExecutingContext?classFullQualifiedName='+classFullQualifiedName);
+                if(result.code === 0){
+                  //是否debug中
+                  this.isDebuging = result.data.debuging;
+                  //是否mute所有断点
+                  this.breakPointsMute = result.data.breakPointsMute;
+                  //是否发生断点变化
+                  this.changing = result.data.changing;
+                  if(!this.isDebuging){
+                    //如果没有在debug中，则变量为空
+                    this.variables = null;
+                    this.debugingClass = null;
+                    this.debugingPointIndex = null;
+                  }
+
+                  if(this.changing){
+                    //正在debug中的类
+                    this.shownClass = result.data.debugingClass;
+                    this.debugingClass = result.data.debugingClass;
+                    //此时更新debug下标
+                    this.debugingPointIndex = result.data.debugingPointIndex;
+                     //默认展开的节点
+                    this.defaultExpandKeys = [result.data.debugingClazzTreeNodeId];
+                    this.currentNodekey = result.data.debugingClazzTreeNodeId;
+                    this.$nextTick(() => {
+                      this.$refs.tree.setCurrentKey(result.data.debugingClazzTreeNodeId); //一定要加这个选中了否则样式没有出来
+                    });
+                     //每次发生变化时，才会请求变量
+                    //this.queryVariables();
+                    this.variables = result.data.variables;
+                  }
+
+                  if(!this.isDebuging){
+                    this.debugingClass = null;
+                  }
+                  if(result.data.html){
+                    this.htmlSourceCode = PR.prettyPrintOne(result.data.html);
+                  }
+                  if(this.changing){
+                    this.tab = 1;
+                    //需要发生在渲染之后
+                    setTimeout(() => {
+                      this.jump();
+                    }, 200);
+                  }
+                  if(result.data.log){
+                      this.debugingLog = this.debugingLog + result.data.log;
+                      this.$nextTick(() => {
+                          let scrollElem = this.$refs.logRef;
+                          scrollElem.scrollTo({ top: scrollElem.scrollHeight, behavior: 'smooth' })
+                      });
+                  }
+
+                  this.allBreakPointsArray = result.data.allBreakPoints;
+                }
+                this.requestingContext = false;
+            } catch(e){
+              console.log(e);
+              this.isDebuging = false;
+              this.requestingContext = false;
+            }
+          },
+
+          async jumpToClassFromBreakPoint(classFullQualifiedName, pointIndex, id){
+            this.expandQueryHtml(classFullQualifiedName, pointIndex,id);
+          },
+
+          async requestHtmlClick(node){
+            if(!node.incrementalPath.endsWith(".java")){
+              //只有.java结尾的才会请求html
+              return;
+            }
+
+            //获取类的全限定名
+            const startIndex = node.incrementalPath.indexOf("src/main/java/") + "src/main/java/".length;
+            const clazzWithEndFix = node.incrementalPath.substring(startIndex);
+            let classFullQualifiedName = clazzWithEndFix.replace(".java", "").replaceAll("/",".");
+            if(classFullQualifiedName == this.shownClass){
+              return;
+            }
+
+            //展示的类换成点击的这个
+            this.shownClass = classFullQualifiedName;
+            let result = await this.fetchRemote('/pinkfoxRequestHtml?classFullQualifiedName=' + classFullQualifiedName);
+            if(result.code === 0 && result.data){
+              this.htmlSourceCode = PR.prettyPrintOne(result.data.htmlSource);
+              if(this.shownClass == this.debugingClass){
+                this.jump();
+              }
+            }
+          },
+
+          async lightQuery(){
+            let result = await this.fetchRemote('/pinkfoxLightQuery');
+            if(result.code === 0 && result.data){
+                if(result.data.changing){
+                  setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+                }
+            }
+          },
+
+          async expandQueryHtml(classFullQualifiedName, debugingPointIndex, id){
+            this.shownClass = classFullQualifiedName;
+            this.debugingPointIndex = debugingPointIndex;
+            let result = await this.fetchRemote('/pinkfoxRequestHtml?classFullQualifiedName='+classFullQualifiedName);
+            if(result.code === 0 && result.data){
+              this.htmlSourceCode = PR.prettyPrintOne(result.data.htmlSource);
+              //默认展开的节点
+              this.defaultExpandKeys = [id];
+              this.currentNodekey = id;
+              this.$nextTick(() => {
+                  this.$refs.tree.setCurrentKey(id); //一定要加这个选中了否则样式没有出来
+              });
+              setTimeout(() => {
+                this.jump();
+              }, 200);
+            }
+          },
+
+          async clearLog(){
+            //this.debugingLog = "欢迎使用pinkfox，在使用中有任何问题，github地址: https://github.com/zhusong/pinkfox。\n\n";
+          },
+
+        async scrollLog() {
+            let result = await this.fetchRemote('/pinkfoxLog');
+            if (result.data) {
+                this.debugingLog = this.debugingLog + result.data
+            }
+            console.log('开始滚动日志')
+          this.$nextTick(() => {
+              const scrollContainer = this.$refs.logRef;
+              scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          });
+          console.log('滚动日志结束')
+        },
+
+          async requestDir(){
+            let result = await this.fetchRemote('/pinkfoxRequestDir');
+            if(result.code === 0 && result.data){
+              this.pathTree.push(result.data.root);
+                setTimeout(() => {
+                    this.queryContext();
+                }, 100);
+            }
+          },
+
+          async clearBreakPoints(){
+            let result = await this.fetchRemote('/pinkfoxClearAllBreakPoint');
+            if(result.code === 0){
+              // this.allBreakPoints(); 
+              // this.queryHtml();
+               setTimeout(() => {
+                this.queryContext();
+              }, 50);
+            }
+          },
+
+          async muteBreakpoints(){
+            let result = await this.fetchRemote('/pinkfoxMuteAllBreakPoint');
+            if(result.code === 0){
+              setTimeout(() => {
+                this.queryContext();
+              }, 50);
+            }
+          },
+
+          async cancelMuteBreakpoints(){
+            let result = await this.fetchRemote('/pinkfoxCancelMuteAllBreakPoint');
+            if(result.code === 0){
+                setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+            }
+          },
+
+          async breakPointClicked(event){
+              event.preventDefault();
+              console.log('点击！event.button='+event.button);
+            if (event.button === 0) {
+                console.log('左键点击！');
+                let target = event.target;
+                let status = target.attributes.status.value;
+                let id = target.id.split("|");
+                let classFullQualifiedName = id[1];
+                let pointIndex = id[2];
+                if(status == 0){
+                    this.addBreakPoint(classFullQualifiedName, pointIndex);
+                }
+                if(status == 1){
+                    // 断点取消时，将存储的条件表达式对象清空
+                    this.dialogs[`${classFullQualifiedName}-${pointIndex}`] = {};
+                    this.removeBreakPoint(classFullQualifiedName, pointIndex);
+                }
+            } else if (event.button === 2) {
+                console.log('右键点击！');
+                let target = event.target;
+                let status = target.attributes.status.value;
+                let id = target.id.split("|");
+                let classFullQualifiedName = id[1];
+                let pointIndex = id[2];
+                if(status == 1 || status == 2){
+                    console.log('status == 1 || status == 2');
+                    this.showInputPopup(classFullQualifiedName, pointIndex);
+                }
+            }
+            // this.allBreakPoints();
+            // this.queryHtml();
+          },
+
+            async showInputPopup(classFullQualifiedName, pointIndex) {
+                const dialogData = this.dialogs[`${classFullQualifiedName}-${pointIndex}`]
+                // 设置当前弹窗的数据
+                if (dialogData) {
+                    if (dialogData.expression) {
+                        this.expression = dialogData.expression;
+                    } else {
+                      this.expression = await this.getBreakPointExpression(classFullQualifiedName, pointIndex);
+                    }
+                }
+                this.classFullQualifiedName = classFullQualifiedName;
+                this.pointIndex = pointIndex;
+                this.dialogVisible = true;
+                console.log('弹窗：dialogVisible=true，classFullQualifiedName='+classFullQualifiedName+'，pointIndex='+pointIndex+'，expression='+this.expression);
+            },
+
+            async handleConfirm() {
+                console.log('提交：', this.classFullQualifiedName + '，' + this.pointIndex + '，' + this.expression);
+                const dialogData = {};
+                dialogData["classFullQualifiedName"] = this.classFullQualifiedName;
+                dialogData["pointIndex"] = this.pointIndex;
+                dialogData["expression"] = this.expression;
+                this.dialogs[`${this.classFullQualifiedName}-${this.pointIndex}`] = dialogData
+                await this.addBreakPointExpression(this.classFullQualifiedName, this.pointIndex, this.expression);
+
+                // 恢复初始值
+                this.classFullQualifiedName = null;
+                this.pointIndex = null;
+                this.expression = null;
+                this.dialogVisible = false;
+            },
+
+            async handleCancel() {
+                // 恢复初始值
+                this.classFullQualifiedName = null;
+                this.pointIndex = null;
+                this.expression = null;
+                this.dialogVisible = false;
+            },
+
+            async expressionBreakpoint(classFullQualifiedName, pointIndex) {
+                const dialogData = this.dialogs[`${classFullQualifiedName}-${pointIndex}`]
+                if (dialogData && dialogData.expression) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
+          async addBreakPoint(classFullQualifiedName, pointIndex){
+              let result = await this.fetchRemote('/pinkfoxAddBreakPoint?classFullQualifiedName=' + classFullQualifiedName + '&pointIndex=' + pointIndex);
+              if(result.code === 0){
+                  setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+          async addBreakPointExpression(classFullQualifiedName, pointIndex, expression){
+              let result = await this.fetchRemote('/pinkfoxAddBreakPointExpression?classFullQualifiedName=' + classFullQualifiedName + '&pointIndex=' + pointIndex + '&expression=' + expression);
+              if(result.code === 0){
+                  setTimeout(() => {
+                      this.queryContext();
+                  }, 50);
+              }
+          },
+
+          async getBreakPointExpression(classFullQualifiedName, pointIndex){
+              let result = await this.fetchRemote('/pinkfoxGetBreakPointExpression?classFullQualifiedName=' + classFullQualifiedName + '&pointIndex=' + pointIndex);
+              if(result.code === 0 && result.data){
+                   return result.data.expression;
+              }
+          },
+
+          async removeBreakPoint(classFullQualifiedName, pointIndex){
+              let result = await this.fetchRemote('/pinkfoxRemoveBreakPoint?classFullQualifiedName=' + classFullQualifiedName + '&pointIndex=' + pointIndex);
+              if(result.code === 0){
+                  setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+          async allBreakPoints(){
+            let result = await this.fetchRemote('/pinkfoxAllBreakPoints');
+            if(result.code === 0 && result.data){
+              this.allBreakPointsArray = result.data;
+            }
+          },
+          updateTab(type){
+            this.tab = type;
+          },
+          async stepOver(){
+            let result = await this.fetchRemote('/pinkfoxStepOver');
+            if(result.code === 0){
+            setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+            }
+          },
+
+          async stepInto(){
+              let result = await this.fetchRemote('/pinkfoxStepInto');
+              if(result.code === 0){
+                setTimeout(() => {
+                   this.queryContext();
+                  }, 50);
+              }
+          },
+
+          async stepOut(){
+              let result = await this.fetchRemote('/pinkfoxStepOut');
+              if(result.code === 0){
+                setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+
+          async resume(){
+              let result = await this.fetchRemote('/pinkfoxResume');
+              if(result.code === 0){
+                 setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+
+          async stop(){
+              let result = await this.fetchRemote('/pinkfoxStop');
+              if(result.code === 0){
+                 setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+          
+          async flush(){
+              let result = await this.fetchRemote('/pinkfoxFlush');
+              if(result.code === 0){
+                 setTimeout(() => {
+                    this.queryContext();
+                  }, 50);
+              }
+          },
+
+          async queryVariables(){
+              let result = await this.fetchRemote('/pinkfoxVariables');
+              if(result.code === 0 && result.data){
+                this.variables = result.data;
+              }
+          },
+
+          async queryExecutingLog(){
+              this.$nextTick(() => {
+                  const scrollContainer = this.$refs.logRef;
+                  scrollContainer.scrollTop = scrollContainer.scrollHeight;
+              })
+          },
+          async fetchRemote(url){
+              return fetch(url,{
+                  mode: 'cors',
+                  headers: {
+                    'Access-Control-Allow-Origin':'*'
+                  }
+              }).then(res => {
+                 return res.json()
+               }).then(data => {
+                  return data;
+              })
+          }
+        },
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2372",
+      "name": "全部",
+      "font_class": "quanbu",
+      "unicode": "34fe",
+      "unicode_decimal": 13566
+    },
+    {
+      "icon_id": "702251",
+      "name": "debug-step-into",
+      "font_class": "debugstepinto",
+      "unicode": "e7b0",
+      "unicode_decimal": 59312
+    },
+    {
+      "icon_id": "702252",
+      "name": "debug-step-out",
+      "font_class": "debugstepout",
+      "unicode": "e7b1",
+      "unicode_decimal": 59313
+    },
+    {
+      "icon_id": "702253",
+      "name": "debug-step-over",
+      "font_class": "debugstepover",
+      "unicode": "e7b2",
+      "unicode_decimal": 59314
+    },
+    {
+      "icon_id": "1074920",
+      "name": "clear (1)",
+      "font_class": "clear1",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "1082160",
+      "name": "flush",
+      "font_class": "flush",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
+      "icon_id": "1241780",
+      "name": "file",
+      "font_class": "file",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "1336063",
+      "name": "List",
+      "font_class": "List",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "1444310",
+      "name": "console",
+      "font_class": "console",
+      "unicode": "e6d0",
+      "unicode_decimal": 59088
+    },
+    {
+      "icon_id": "5301757",
+      "name": "resume",
+      "font_class": "resume",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "5315767",
+      "name": "show",
+      "font_class": "show",
+      "unicode": "e760",
+      "unicode_decimal": 59232
+    },
+    {
+      "icon_id": "5428546",
+      "name": "stop",
+      "font_class": "stop",
+      "unicode": "e71e",
+      "unicode_decimal": 59166
+    },
+    {
+      "icon_id": "8078268",
+      "name": "clear",
+      "font_class": "clear",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "8094805",
+      "name": "clear",
+      "font_class": "clear2",
+      "unicode": "e900",
+      "unicode_decimal": 59648
+    },
+    {
+      "icon_id": "9758626",
+      "name": "down arrow",
+      "font_class": "downarrow",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "11132210",
+      "name": "arrow",
+      "font_class": "arrow",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "13253906",
+      "name": "circle-close",
+      "font_class": "circle-close",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "13265574",
+      "name": "resource_FileFolder_Off_icon ",
+      "font_class": "resource_FileFolder_Off_icon",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "13691618",
+      "name": "circle_minus",
+      "font_class": "circle_minus",
+      "unicode": "e890",
+      "unicode_decimal": 59536
+    },
+    {
+      "icon_id": "16619477",
+      "name": "trash",
+      "font_class": "trash",
+      "unicode": "e6dd",
+      "unicode_decimal": 59101
+    },
+    {
+      "icon_id": "18749985",
+      "name": "circle-close",
+      "font_class": "circle-close1",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "27907400",
+      "name": "source-file-1",
+      "font_class": "source-file-1",
+      "unicode": "ec37",
+      "unicode_decimal": 60471
+    },
+    {
+      "icon_id": "27907403",
+      "name": "source-file",
+      "font_class": "source-file",
+      "unicode": "ec38",
+      "unicode_decimal": 60472
+    },
+    {
+      "icon_id": "32382524",
+      "name": "ic_source file_common",
+      "font_class": "a-ic_sourcefile_common",
+      "unicode": "e544",
+      "unicode_decimal": 58692
+    },
+    {
+      "icon_id": "35335701",
+      "name": "circle-minus",
+      "font_class": "circle-minus",
+      "unicode": "e8a6",
+      "unicode_decimal": 59558
+    }
+  ]
+}
