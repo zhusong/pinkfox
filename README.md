@@ -37,7 +37,7 @@
 - 支持一键禁用全部断点、清除全部断点。
 - 无需额外开通端口，通过浏览器即可访问和使用。
 - 调试代码就是服务器代码，无需担心代码版本不一致问题。
-- 编译环节做到预发、线上环境完全隔离，在maven compile阶段加入-Djdebugger=true即可生效Debug能力。不加-Djdebugger=true业务完全不受影响（同不加maven dependency）。
+- 编译环节做到预发、线上环境完全隔离，在maven compile阶段加入-Dpinkfox=true即可生效Debug能力。不加-Dpinkfox=true业务完全不受影响（同不加maven dependency）。
 - 支持>、<、>=、<=、==等条件表达式断点。
 - 支持目标类文件搜索触达。
 - 支持内部类断点。
@@ -79,7 +79,7 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 -Djps.track.ap.dependencies=false
 ```
 
-### 2、访问jdebugger.html被sso拦截。
+### 2、访问pinkfox.html被sso拦截。
 请在excludePath中排除/路径，或者进群咨询，群ID在本文最下方。
 
 ### 3、jdk支持：
