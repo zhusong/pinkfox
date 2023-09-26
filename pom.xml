@@ -27,14 +27,6 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>JD maven2 repository-snapshots</name>
-            <url>http://artifactory.jd.com/libs-snapshots-local</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>com.google.auto.service</groupId>
