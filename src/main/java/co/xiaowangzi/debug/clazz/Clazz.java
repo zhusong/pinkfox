@@ -15,7 +15,6 @@ public class Clazz implements Serializable {
 
     //每个断点的可见局部变量
     private List<List<String>> breakPointVariables;
-//    private List<Set<String>> breakPointVariables;
     //本类字段
     private List<String> fields;
     //本类全限定名
