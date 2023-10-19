@@ -17,7 +17,7 @@
 再分析目前的开发几个痛点：
 
 - 项目依赖的环境复杂，只能在预发进行自测、调试
-我东很多项目， 因依赖的环境和配置比较复杂，经常没有本地环境可供调试，而开发为了能进行自测、联调、测试，通常是在预发环境上进行。
+很多项目因依赖的环境和配置比较复杂，经常没有本地环境可供调试，而开发为了能进行自测、联调、测试，通常是在预发环境上进行。
 - 日志的规范考验能力当出现需要调试或者排查问题时，以传统的日志方式诚然也能发现问题，但这比较繁琐，尤其是日志的打印规范非常考验程序员的经验和素质。 当一个项目经过多次交手后，在对老业务进行问题诊断时，称得上两眼一抹黑，无奈也只能加日志、打包、上线、重新请求、查看日志、找出问题，从而浪费生命。
 - 传统IDE配置繁琐
 传统IDE集成的remote debug能力开启，需要配置开通端口，然后本地服务器启动，再进入调试，比较麻烦，同时本地与服务器代码容易不一致而导致调试混乱。
@@ -92,6 +92,42 @@ com.sun.proxy.$Proxy8 cannot be cast to com.sun.tools.javac.processing.JavacProc
 因为是web http请求，部分特殊项目结构存在调试页面的servlet请求无法走到debug状态机，从而功能无法正常使用，此时进群咨询，群ID在本文最下方。
 ### 6、无法获取普通注释
 源码展示中javadoc可以正常展示，但普通注释无法输出。
+### 7、jdebugger.html访问404
+可能被springmvc的DispatchServlet拦截在mvc的配置中加入下面的代码：表示当没有匹配的静态资源交给default servlet处理。
+
+```text
+<mvc:default-servlet-handler/>
+```
+
+### 8、符号未找到错误（与lombok混用时可能出现此问题）2种解决办法：
+将jdebugger的依赖放在lombok之后，如果项目比较复杂，可以按照第二种办法解决
+在项目根目录下添加，主动声明annotationProcessor的执行顺序
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.8.1</version>
+  <configuration>
+    <source>8</source>
+    <target>8</target>
+    <encoding>UTF-8</encoding>
+    <annotationProcessorPaths>
+      <path>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>你的lombok版本</version>
+      </path>
+      <!-- 这就是文中提到的 jar -->
+      <path>
+        <groupId>com.jd.java.debug.tools</groupId>
+        <artifactId>jdebugger</artifactId>
+        <version>2.2-SNAPSHOT</version>
+      </path>
+    </annotationProcessorPaths>
+  </configuration>
+</plugin>
+```
+如果仍然解决不了，加群沟通下。
 
 ## 界面使用
 
