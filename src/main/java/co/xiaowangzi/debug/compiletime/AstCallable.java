@@ -103,8 +103,6 @@ public class AstCallable implements java.util.concurrent.Callable<Map<String, Cl
             }
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            //countDownLatch.countDown();
         }
         return clazzMap;
     }
